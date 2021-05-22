@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  pulsar:
+    image: apachepulsar/pulsar:2.7.1
+    ports:
+      - "8080:8080"
+      - "6650:6650"
+    volumes:
+      - pulsardata:/pulsar/data
+      - pulsarconf:/pulsar/conf
+    command:
+      bash -c "bin/pulsar standalone"
+volumes:
+  pulsardata:
+  pulsarconf:
