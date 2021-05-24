@@ -1,6 +1,6 @@
 import pulsar
 
-client = pulsar.Client('pulsar://localhost:6650')
+client = pulsar.Client('pulsar://pulsar:6650')
 consumer = client.subscribe('my-topic',
                             subscription_name='my-sub')
 

@@ -3,14 +3,20 @@ version: '3.7'
 services:
   pulsar:
     image: apachepulsar/pulsar:2.7.1
+    hostname: pulsar
     ports:
-      - "8080:8080"
-      - "6650:6650"
+      - '8080:8080'
+      - '6650:6650'
     volumes:
       - pulsardata:/pulsar/data
       - pulsarconf:/pulsar/conf
-    command:
-      bash -c "bin/pulsar standalone"
+    command: bash -c "bin/pulsar standalone"
+  consume:
+    image: master:5000/github-analytics
+    command: bash -c "python3 consum.py"
+  producer:
+    image: master:5000/github-analytics
+    command: bash -c "python3 producer.py"
 volumes:
   pulsardata:
   pulsarconf:
