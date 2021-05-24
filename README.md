@@ -15,6 +15,10 @@ docker stack deploy -c g19-stack.yaml demo
 ```
 
 #### Run local image registry
+```bash
+sudo docker run -d -p 5000:5000 --restart=always --name registry registry:2
+```
+#### Push image to registry
 - add master ip to /etc/hosts 
 - add to /etc/docker/daemon.json 
 ```json
