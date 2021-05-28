@@ -1,0 +1,3 @@
+PyGithub
+GitPython
+pulsar-client==2.7.2
