@@ -1,0 +1,45 @@
+version: "3.7"
+services:
+    pulsar:
+        image: apachepulsar/pulsar:2.7.1
+        hostname: pulsar
+        ports:
+            - '8080:8080'
+            - '6650:6650'
+        environment:
+            PULSAR_MEM: " -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
+        volumes:
+            - pulsardata:/pulsar/data
+            - pulsarconf:/pulsar/conf
+        command: bash -c "bin/pulsar standalone"
+    database:
+        build:
+            context: ./database
+        ports:
+            - '5432:5432'
+    grafana:
+        image: grafana/grafana
+        ports:
+            - "3000:3000"
+        volumes:
+            - grafana-storage:/var/lib/grafana
+    scraper:
+        build:
+            context: ./scraper
+            network: host
+        restart: on-failure
+        depends_on: 
+            - pulsar
+    worker:
+        build:
+            context: ./worker
+            network: host
+        restart: on-failure
+        depends_on: 
+            - pulsar
+            
+            #- scraper
+volumes:
+    pulsardata:
+    pulsarconf:
+    grafana-storage:    
