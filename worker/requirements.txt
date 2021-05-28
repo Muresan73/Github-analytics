@@ -1,0 +1,4 @@
+pulsar-client==2.7.2
+PyGithub
+GitPython
+psycopg2
