@@ -1,5 +1,4 @@
 version: '3.7'
-
 services:
   pulsar:
     image: apachepulsar/pulsar:2.7.1
@@ -7,16 +6,52 @@ services:
     ports:
       - '8080:8080'
       - '6650:6650'
+    environment:
+      PULSAR_MEM: ' -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g'
     volumes:
       - pulsardata:/pulsar/data
       - pulsarconf:/pulsar/conf
     command: bash -c "bin/pulsar standalone"
-  consume:
-    image: master:5000/github-analytics
-    command: bash -c "python3 consum.py"
-  producer:
-    image: master:5000/github-analytics
-    command: bash -c "python3 producer.py"
+  database:
+    image: master:5000/github-analytics-database
+    ports:
+      - '5432:5432'
+  grafana:
+    image: grafana/grafana
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+  initiator:
+    image: master:5000/github-analytics-initiator
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - pulsar
+  scraper:
+    image: master:5000/github-analytics-scraper
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - pulsar
+  worker:
+    image: master:5000/github-analytics-worker
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 15
+    depends_on:
+      - pulsar
+    command: python worker.py
+  test:
+    image: master:5000/github-analytics-test
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 2
 volumes:
   pulsardata:
   pulsarconf:
+  grafana-storage:

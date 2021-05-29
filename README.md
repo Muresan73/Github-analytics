@@ -11,7 +11,7 @@ docker swarm init
 ```
 
 ```bash
-docker stack deploy -c g19-stack.yaml demo
+docker stack deploy -c g19-stack.yaml ga
 ```
 
 #### Run local image registry
@@ -31,3 +31,8 @@ sudo docker build --network=host -t github-analytics .
 sudo docker tag github-analytics  master:5000/github-analytics
 sudo docker push master:5000/github-analytics
 ```
+
+
+# debug
+
+docker service ps --no-trunc
