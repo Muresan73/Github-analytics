@@ -15,7 +15,3 @@ sudo docker push master:5000/github-analytics-worker
 sudo docker build --network=host -t github-analytics-initiator ./initiator
 sudo docker tag github-analytics-initiator  master:5000/github-analytics-initiator
 sudo docker push master:5000/github-analytics-initiator
-
-sudo docker build --network=host -t github-analytics-test ./test
-sudo docker tag github-analytics-test  master:5000/github-analytics-test
-sudo docker push master:5000/github-analytics-test

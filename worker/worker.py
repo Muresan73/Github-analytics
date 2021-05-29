@@ -10,6 +10,7 @@ import json
 import logging
 import sys
 import psycopg2
+from _pulsar import ConsumerType
 
 p_languages = {
     'python': '(testproject|gauge|jasmin|pytest|unittest|Nose2|Testify)',
@@ -148,7 +149,7 @@ def database_insert(name, language, commits, tests, ci_cd):
 
 def main():
     client = pulsar.Client('pulsar://pulsar:6650')
-    consumer = client.subscribe('repos', subscription_name='worker')
+    consumer = client.subscribe('repos', subscription_name='worker',consumer_type=ConsumerType.Shared)
 
     while True:
         message = consumer.receive()

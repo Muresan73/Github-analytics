@@ -36,3 +36,4 @@ sudo docker push master:5000/github-analytics
 # debug
 
 docker service ps --no-trunc
+docker swarm join-token worker
