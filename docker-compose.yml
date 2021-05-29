@@ -23,6 +23,13 @@ services:
             - "3000:3000"
         volumes:
             - grafana-storage:/var/lib/grafana
+    initiator:
+        build:
+            context: ./initiator
+            network: host
+        restart: on-failure
+        depends_on: 
+            - pulsar
     scraper:
         build:
             context: ./scraper
@@ -37,8 +44,7 @@ services:
         restart: on-failure
         depends_on: 
             - pulsar
-            
-            #- scraper
+            #- scraper 
 volumes:
     pulsardata:
     pulsarconf:
