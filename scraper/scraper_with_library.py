@@ -12,12 +12,13 @@ import json
 import pulsar
 
 # using an access token
-token = '<TOKEN>'
-g = Github(token, per_page=10)
+tokens = ['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', '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', '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']
+#token = '<TOKEN>'
+
 
 client = pulsar.Client('pulsar://pulsar:6650')
-producer = client.create_producer('my-topic')
-
+producer = client.create_producer('repos')
+consumer = client.subscribe('dates', subscription_name='scraper')
 
 default = False
 logging.basicConfig(level=logging.INFO)
@@ -42,6 +43,7 @@ def get_repositories(date, pageNum, token):
     payload={}
     # TODO: Change per_page to 100
     url = "https://api.github.com/search/repositories?q=pushed:" + str(date) + "&archived:false&page=" + str(pageNum) + "&per_page=100"
+    logging.info("URL: %s" % url)
     response = requests.request("GET", url, headers=headers, data=payload)
 
     for item in response.json()['items']:
@@ -62,16 +64,9 @@ def get_repositories(date, pageNum, token):
     The function can be used for the "round-robin"
     exchange of tokens
 '''
-def get_rate_limit():
+def get_rate_limit(g):
     limit = g.get_rate_limit()
     return limit.search.remaining
-
-#get_commits('<REPO_NAME>')
-#ci_cd_tests('<REPO_NAME>')
-#get_repositories()
-#get_rate_limit()
-#test_repo()
-#clone_repo('https://github.com/PyGithub/PyGithub.git')
 
 
 """ def main():
@@ -99,31 +94,75 @@ def get_rate_limit():
     print("Broke ;)")
     client.close() """
 
-def main():
+''' Implementation wihout pulsar. Creates dates on the fly'''
+""" def main():
     date = datetime.date(2020, 1 ,1)
     logging.info("Starting the service with date: %s" % date)
+    token_num = 0
+    token = tokens[token_num]
     pageNum = 0
     while True:
         for pageNum in range(1, 11):
             remaining = get_rate_limit()
             logging.info("Remaining: %s" % remaining)
             if remaining <= 1:
-                logging.info("Rate limit reached for token")
-                time.sleep(3600)
+                token_num += 1
+                if token_num == 3:
+                    token_num = 0
+                token = tokens[token_num]
+                remaining = get_rate_limit()
+                if remaining <= 1:
+                    logging.info("Rate limit reached for all token")
+                    time.sleep(3600)
 
             get_repositories(date, pageNum, token)
             
         logging.info("Finished day: %s" % date)
         time.sleep(20)
         date = date + datetime.timedelta(days=1)
-
-        # TODO: REMOVE
-        """ if date.day == 10:
-            break  """
         
     #print("Broke ;)")
+    client.close() """
+
+
+def main():
+    token_num = 0
+    token = tokens[token_num]
+    g = Github(token, per_page=10)
+    pageNum = 0
+    logging.info("Starting scraping of repos")
+    while True:
+        message = consumer.receive()
+        logging.info(message)
+        consumer.acknowledge(message)
+        logging.info("Received message : '%s'" % message.data())
+
+        dateInfo = json.loads(message.data().decode("utf-8"))
+        pageNum = dateInfo['page']
+        date = datetime.datetime.strptime(dateInfo['date'], '%d-%m-%Y')
+        
+        # Token handling
+        remaining = get_rate_limit(g)
+        logging.info("Remaining: %s" % remaining)
+        if remaining <= 1:
+            token_num += 1
+            if token_num == 3:
+                token_num = 0
+            token = tokens[token_num]
+            g = Github(token, per_page=10)
+            remaining = get_rate_limit(g)
+            if remaining <= 1:
+                logging.info("Rate limit reached for all token")
+                time.sleep(3600)
+
+        get_repositories(date.date(), pageNum, token)
+            
+        logging.info("Finished day: %s" % date)
+        
+        
     client.close()
 
 
 if __name__ == "__main__":
     main()
+
