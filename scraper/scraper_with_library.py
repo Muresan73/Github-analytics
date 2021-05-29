@@ -23,17 +23,6 @@ consumer = client.subscribe('dates', subscription_name='scraper')
 default = False
 logging.basicConfig(level=logging.INFO)
 
-''' Function to get all the repositories based
-    on the query defined in the first line
-'''
-""" def get_repositories_library():
-    query = 'updated_at:>2020-01-01&page=1&per_page=100'
-    query = 'pushed:>2020-05-24 archived:false'
-    repos = g.search_repositories(query, sort='stars', order='desc')
-    for i in range (1):
-        print(repos[i])
-        print(repos[i].full_name , repos[i].language)
-        #get_commits(repos[i].full_name) """
 
 def get_repositories(date, pageNum, token):
     headers = {
@@ -67,63 +56,6 @@ def get_repositories(date, pageNum, token):
 def get_rate_limit(g):
     limit = g.get_rate_limit()
     return limit.search.remaining
-
-
-""" def main():
-    date = datetime.date(2020, 1 ,1)
-    pageNum = 0
-    while True:
-        if pageNum < 10:
-            logging.info('Date')
-            pageNum += 1
-        else: 
-            date = date + datetime.timedelta(days=1)
-            pageNum = 1
-        # TODO: REMOVE
-        #if date.day == 10:
-        #    break
-        remaining = get_rate_limit()
-        print("Remaining: ", remaining)
-        # TODO: Define three tokens
-        if remaining <= 1:
-            print("Rate limit reached for token")
-            time.sleep(3600)
-
-        get_repositories(date, pageNum, token)
-        time.sleep(20)
-    print("Broke ;)")
-    client.close() """
-
-''' Implementation wihout pulsar. Creates dates on the fly'''
-""" def main():
-    date = datetime.date(2020, 1 ,1)
-    logging.info("Starting the service with date: %s" % date)
-    token_num = 0
-    token = tokens[token_num]
-    pageNum = 0
-    while True:
-        for pageNum in range(1, 11):
-            remaining = get_rate_limit()
-            logging.info("Remaining: %s" % remaining)
-            if remaining <= 1:
-                token_num += 1
-                if token_num == 3:
-                    token_num = 0
-                token = tokens[token_num]
-                remaining = get_rate_limit()
-                if remaining <= 1:
-                    logging.info("Rate limit reached for all token")
-                    time.sleep(3600)
-
-            get_repositories(date, pageNum, token)
-            
-        logging.info("Finished day: %s" % date)
-        time.sleep(20)
-        date = date + datetime.timedelta(days=1)
-        
-    #print("Broke ;)")
-    client.close() """
-
 
 def main():
     token_num = 0
