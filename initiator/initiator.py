@@ -26,6 +26,8 @@ def main():
             logging.info("Sending message: %s" % jsonMessage)
             producer.send((jsonMessage).encode('utf-8'))
         date = date + datetime.timedelta(days=1)
-
+    while True:
+        logging.info("Sleeping")
+        time.sleep(3600)
 if __name__ == "__main__":
     main()

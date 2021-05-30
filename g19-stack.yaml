@@ -22,6 +22,9 @@ services:
       - '3000:3000'
     volumes:
       - grafana-storage:/var/lib/grafana
+    deploy:
+      restart_policy:
+        condition: on-failure
   initiator:
     image: master:5000/github-analytics-initiator
     deploy:
@@ -45,12 +48,6 @@ services:
     depends_on:
       - pulsar
     command: python worker.py
-  test:
-    image: master:5000/github-analytics-test
-    deploy:
-      restart_policy:
-        condition: on-failure
-      replicas: 2
 volumes:
   pulsardata:
   pulsarconf:
