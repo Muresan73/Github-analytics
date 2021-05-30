@@ -54,9 +54,23 @@ secgroups = ['default','c3po']
 print ("Creating instances ... ")
 workers = []
 for i in range(2):
-    instance_worker = nova.servers.create(name="g19-worker-"+str(identifier), image=image, flavor=flavor, key_name='c3po',userdata=userdata_prod, nics=nics,security_groups=secgroups)
+    instance_worker = nova.servers.create(name="g19-worker-"+str(i), image=image, flavor=flavor, key_name='c3po',userdata=userdata_prod, nics=nics,security_groups=secgroups)
     workers.append(instance_worker)
 
-# print ("Instance: "+ instance_dev.name +" is in " + inst_status_dev + " state" + " ip address: "+ ip_address_dev)
+time.sleep(10)
+
+ip_adresses = []
+
+for instance in workers:
+    for network in instance.networks[private_net]:
+        if re.match('\d+\.\d+\.\d+\.\d+', network):
+            ip_adresses.append(network)
+
+for i in range(len(workers)):
+    print("Instance: "+ workers[i].name +" is in " + workers[i].status + " state" + " ip address: "+ ip_adresses[i])
 
 # TODO add worker nodes to ansible hosts
+
+with open('/etc/ansible/hosts', 'w') as f:
+    f.writelines('[workers]\n')
+    f.writelines('\n'.join(ip_adresses))

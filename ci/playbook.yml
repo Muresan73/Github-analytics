@@ -5,18 +5,21 @@
     - ./default.yml
 
   tasks:
-    - name: Generate hosts file
-     lineinfile: dest=/etc/hosts
-                 regexp='.*{{ item }}$'
-                 line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}"
-                 state=present            
-     when: hostvars[item].ansible_default_ipv4.address is defined
-     with_items: "{{groups['all']}}"
-     become: true
+    # - name: Generate hosts file
+    #   lineinfile: dest=/etc/hosts
+    #               regexp='.*{{ item }}$'
+    #               line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}"
+    #               state=present            
+    #   when: hostvars[item].ansible_default_ipv4.address is defined
+    #   with_items: "{{groups['all']}}"
+    #   become: true
 
+    - name: add master IP to host 
+      lineinfile:
+        path: /etc/hosts
+        line: "{{masterIP}} master"
+        insertbefore: BOF
 
-    - name: Install aptitude using apt
-      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
 
     - name: Install required system packages
       apt: name={{ item }} state=latest update_cache=yes
@@ -41,4 +44,4 @@
 
     - name: Join Swarm
       become: true
-      shell: docker swarm join --token "{{ token }}" master:2377
+      shell: docker swarm join --token {{ token }} master:2377
