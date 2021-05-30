@@ -2,7 +2,7 @@
 - hosts: all
   become: true
   vars_files:
-    - ./default.yml
+    - ./ansible_config.yml
 
   tasks:
     # - name: Generate hosts file
@@ -19,7 +19,6 @@
         path: /etc/hosts
         line: "{{masterIP}} master"
         insertbefore: BOF
-
 
     - name: Install required system packages
       apt: name={{ item }} state=latest update_cache=yes
@@ -42,6 +41,27 @@
       pip:
         name: docker
 
+    - name: Creating docker daemon config
+      file:
+        path: /etc/docker/daemon.json 
+        state: touch
+
+    - name: Add registry config
+      lineinfile:
+        path: /etc/docker/daemon.json 
+        line: '{ "insecure-registries" : ["master:5000"] }'
+        insertbefore: BOF
+
+    - name: restart docker
+      service:
+        name: docker
+        state: restarted
+        enabled: yes
+
     - name: Join Swarm
       become: true
       shell: docker swarm join --token {{ token }} master:2377
+
+  handlers:
+    - name: restart docker
+      service: name=docker state=restarted

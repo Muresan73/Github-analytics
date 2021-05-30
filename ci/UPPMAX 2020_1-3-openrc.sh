@@ -36,3 +36,8 @@ export OS_REGION_NAME="east-1"
 if [ -z "$OS_REGION_NAME" ]; then unset OS_REGION_NAME; fi
 export OS_INTERFACE=public
 export OS_IDENTITY_API_VERSION=3
+
+export OS_USER_DOMAIN_NAME="snic"
+export OS_IDENTITY_API_VERSION="3"
+export OS_PROJECT_DOMAIN_NAME="snic"
+export OS_PROJECT_NAME="UPPMAX 2020/1-3"
