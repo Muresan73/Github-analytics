@@ -13,7 +13,6 @@ import pulsar
 
 # using an access token
 tokens = ['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', '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', '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']
-#token = '<TOKEN>'
 
 
 client = pulsar.Client('pulsar://pulsar:6650')
@@ -47,7 +46,6 @@ def get_repositories(date, pageNum, token):
            
         logging.info("Sending message: %s" % jsonMessage)
         producer.send((jsonMessage).encode('utf-8'))
-        #get_commits_number(item['full_name'])
 
 ''' Function to get the rate limits for each category
     The function can be used for the "round-robin"

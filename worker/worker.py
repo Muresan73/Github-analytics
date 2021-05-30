@@ -100,21 +100,11 @@ def static_analysis(tmpdirname, language):
 
             if ci_cd and tests:
                 return (True, True)
-    # except Exception as e:
-    #     exc_type, exc_obj, exc_tb = sys.exc_info()
-    #     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-    #     logging.info(exc_type, fname, exc_tb.tb_lineno)
-        #logging.error(e)
     logging.info('CI/CD %s' % ci_cd)
     logging.info('Tests %s' % tests)            
     return (tests, ci_cd)
 
-#get_commits('<REPO_NAME>')
-#ci_cd_tests('<REPO_NAME>')
-#get_repositories()
-#get_rate_limit()
-#test_repo()
-
+''' Function to add the data to the database'''
 def database_insert(name, language, commits, tests, ci_cd):
     logging.info('Storing result to database')
     try:
@@ -164,13 +154,6 @@ def main():
             logging.info("Clone url: %s" % cloneUrl)
             
             clone_repo(cloneUrl, language, fullName)
-            """ # Repo-Language mapping.
-            repo_language_dict[repo_name] = language
-            # Languages-Number of repos mapping.
-            languages_dict[language] = languages_dict.get(language, 0) + 1
-            
-            # Print the progress.
-            print(f"Current result: {languages_dict}") """
 
             # Acknowledge for receiving the message
             consumer.acknowledge(message)
