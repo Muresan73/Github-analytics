@@ -1,0 +1,4 @@
+---
+create_containers: 2
+token: '<token>'
+masterIP: '<ip>'
