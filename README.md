@@ -2,7 +2,7 @@
 
 The repository is part of the project assignment for DE-2 Project
 
-## Start the serive
+## Start the service
 
 ### Setup
 
@@ -36,6 +36,51 @@ ansible-playbook playbook.yml
 - deploy swarm stack
 ```bash
 docker stack deploy -c g19-stack.yaml ga
+```
+
+## Setup Grafana
+In order to setup the visualisation in Grafana, the data source needs to be created and the dashboard needs to be imported.
+
+### Port forwarding 
+Since the port 3000 where Grafana is running, is not open, use port forwarding to access it locally, using:
+```bash
+ssh -N -f -L localhost:3000:localhost:3000 ubuntu@<SERVER_IP>
+```
+
+### Login
+Login using the defaults credentials `admin:admin` and change the password.
+
+### Add Datasource
+Navigate to configuration and add a new postgres datasource with the following credentials:
+- `Host: database:5432`
+- `Database: postgres`
+- `User: postgres`
+- `Password: databasepass`
+- `TLS/SSL Mode: disable`
+
+Save and test the datasource; a green message should appear showing that the datasource was successfully added.
+
+### Import dashboard
+Press the plus button in the menu, select import and use JSON file. Select the `grafana/Main dashboard-1622293183944.json`. A dashboard named `Main dashboard` should be created, containing the queries for the 4 questions.
+
+### Queries
+The queries used in the imported Grafana dashboard are shown in the following sections. Presenting a different number of results can be achieved by changing the number of the limit.
+
+#### Query for commits
+```bash
+SELECT NOW() AS "time",  name AS metric, commits as value FROM repository where LENGTH(name) > 1 ORDER BY commits desc LIMIT 10
+```
+#### Query for languages
+```bash
+SELECT NOW() AS "time",  language AS metric, count(*) as value FROM repository where LENGTH(language) > 1 GROUP BY language ORDER BY value desc LIMIT 10
+```
+#### Query for tests
+```bash
+SELECT NOW() AS "time",  language AS metric, count(*) as value FROM repository where LENGTH(language) > 1 and tests = true GROUP BY language ORDER BY value desc LIMIT 10
+```
+#### Query for ci/cd
+```bash
+SELECT NOW() AS "time",  language AS metric, count(*) as value FROM repository where LENGTH(language) > 1 and ci_cd = true GROUP BY language ORDER BY value desc LIMIT 10
 ```
 
 ## Manual setup
