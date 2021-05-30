@@ -42,19 +42,14 @@ else:
 
 #print("Path at terminal when executing this file")
 #print(os.getcwd() + "\n")
-cfg_file_path =  os.getcwd()+'/prod-cloud-cfg.txt'
+cfg_file_path =  os.getcwd()+'/cloud-cfg.txt'
 if os.path.isfile(cfg_file_path):
     userdata_prod = open(cfg_file_path)
 else:
-    sys.exit("prod-cloud-cfg.txt is not in current working directory")
+    sys.exit("cloud-cfg.txt is not in current working directory")
+   
 
-cfg_file_path =  os.getcwd()+'/dev-cloud-cfg.txt'
-if os.path.isfile(cfg_file_path):
-    userdata_dev = open(cfg_file_path)
-else:
-    sys.exit("dev-cloud-cfg.txt is not in current working directory")    
-
-secgroups = ['default']
+secgroups = ['default','c3po']
 
 print ("Creating instances ... ")
 workers = []
@@ -63,3 +58,5 @@ for i in range(2):
     workers.append(instance_worker)
 
 # print ("Instance: "+ instance_dev.name +" is in " + inst_status_dev + " state" + " ip address: "+ ip_address_dev)
+
+# TODO add worker nodes to ansible hosts
