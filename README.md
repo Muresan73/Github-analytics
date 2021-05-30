@@ -1,4 +1,4 @@
-# Github-analytics
+# Github-analytics - Greoup 19
 
 The repository is part of the project assignment for DE-2 Project
 
@@ -48,7 +48,7 @@ ssh -N -f -L localhost:3000:localhost:3000 ubuntu@<SERVER_IP>
 ```
 
 ### Login
-Login using the defaults credentials `admin:admin` and change the password.
+Login using the default credentials `admin:admin` and change the password.
 
 ### Add Datasource
 Navigate to configuration and add a new postgres datasource with the following credentials:
