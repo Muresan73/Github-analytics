@@ -32,9 +32,11 @@ echo '
 1. configure openstack for UPPMAX
 $ source UPPMAX\ 2020_1-3-openrc.sh
 
-2. deploy worker instances
+2. generate ssh-key pair and add the public one to UPPMAX
+
+3. deploy worker instances
 $ python3 start_Instance.py
 
-3. configure instances with ansible
+4. configure instances with ansible
 $ ansible-playbook playbook.yml
 '

@@ -1,4 +1,4 @@
-# Github-analytics - Greoup 19
+# Github-analytics - Group 19
 
 The repository is part of the project assignment for DE-2 Project
 
@@ -15,7 +15,7 @@ cd ci
 ```bash
 source UPPMAX\ 2020_1-3-openrc.sh
 ```
-
+- generate ssh-key pair and add the public one to UPPMAX
 - deploy worker instances
 ```bash
 python3 start_Instance.py

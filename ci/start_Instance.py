@@ -51,10 +51,12 @@ else:
 
 secgroups = ['default','c3po']
 
+keyname = input("Enter your UPPMAX ssh-key name: ") 
+
 print ("Creating instances ... ")
 workers = []
 for i in range(2):
-    instance_worker = nova.servers.create(name="g19-worker-"+str(i), image=image, flavor=flavor, key_name='c3po',userdata=userdata_prod, nics=nics,security_groups=secgroups)
+    instance_worker = nova.servers.create(name="g19-worker-"+str(i), image=image, flavor=flavor, key_name=keyname,userdata=userdata_prod, nics=nics,security_groups=secgroups)
     workers.append(instance_worker)
 
 time.sleep(30)
